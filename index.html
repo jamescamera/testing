@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ten Questions — an autism screening questionnaire</title>
+<meta name="description" content="A ten-item autism screening questionnaire for adults. Nothing you enter leaves your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --paper:#E9EAE6;
+  --paper-raised:#F2F3EF;
+  --ink:#1A1C1A;
+  --ink-soft:#5B5F5C;
+  --rule:#C9CBC5;
+  --trace:#3D5A80;
+  --trace-wash:rgba(61,90,128,.10);
+
+  --serif:"Newsreader",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --step:clamp(1.5rem,5vw,2.25rem);
+  --gut:clamp(1.25rem,5vw,2rem);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.55;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  padding:var(--gut);
+  padding-bottom:calc(var(--gut) + env(safe-area-inset-bottom));
+}
+
+.wrap{
+  width:100%;
+  max-width:38rem;
+  margin:0 auto;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ============================================================
+   TYPE ROLES
+   ============================================================ */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.75rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.masthead{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  padding-bottom:.9rem;
+  border-bottom:1px solid var(--rule);
+  margin-bottom:var(--step);
+}
+h1{
+  font-family:var(--serif);
+  font-weight:300;
+  font-size:1.05rem;
+  letter-spacing:.01em;
+}
+.question{
+  font-family:var(--serif);
+  font-weight:300;
+  font-size:clamp(1.5rem,5.5vw,2.1rem);
+  line-height:1.25;
+  letter-spacing:-.01em;
+  text-wrap:balance;
+}
+.prose{
+  font-family:var(--serif);
+  font-weight:300;
+  font-size:clamp(1.02rem,2.6vw,1.12rem);
+  line-height:1.6;
+  color:var(--ink);
+}
+.prose + .prose{margin-top:.9rem}
+.fine{
+  font-size:.86rem;
+  line-height:1.55;
+  color:var(--ink-soft);
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+.screen{display:none;flex:1;flex-direction:column}
+.screen.on{display:flex}
+@media (prefers-reduced-motion:no-preference){
+  .screen.on > *{animation:rise .38s cubic-bezier(.2,.7,.3,1) backwards}
+  .screen.on > *:nth-child(2){animation-delay:.05s}
+  .screen.on > *:nth-child(3){animation-delay:.09s}
+}
+@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* ---- intro ---- */
+.intro-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.4rem;padding:1rem 0 2rem}
+.lede{
+  font-family:var(--serif);
+  font-weight:300;
+  font-size:clamp(1.75rem,6.5vw,2.6rem);
+  line-height:1.18;
+  letter-spacing:-.015em;
+  text-wrap:balance;
+}
+.notes{
+  border-top:1px solid var(--rule);
+  padding-top:1.1rem;
+  display:grid;
+  gap:.7rem;
+}
+.note{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start}
+.note .mark{font-family:var(--mono);font-size:.72rem;color:var(--trace);padding-top:.28rem}
+
+/* ---- question stage ---- */
+.stage{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:8.5rem;padding:.5rem 0 1.6rem}
+.qhead{display:flex;align-items:baseline;gap:.8rem;margin-bottom:1rem}
+.placeholder-flag{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#8A5A3C;
+  border:1px solid #D8B9A4;
+  border-radius:2px;
+  padding:.12rem .4rem;
+}
+
+/* ---- answers ---- */
+.answers{display:grid;gap:.5rem;margin-bottom:1.4rem}
+.answer{
+  font-family:var(--sans);
+  font-size:1rem;
+  text-align:left;
+  background:var(--paper-raised);
+  color:var(--ink);
+  border:1px solid var(--rule);
+  border-radius:3px;
+  padding:.85rem 1rem;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:.85rem;
+  transition:border-color .16s,background .16s,transform .12s;
+}
+.answer .k{
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:var(--ink-soft);
+  min-width:.9rem;
+  transition:color .16s;
+}
+.answer:hover{border-color:var(--trace)}
+.answer:active{transform:translateY(1px)}
+.answer:focus-visible{outline:2px solid var(--trace);outline-offset:2px}
+.answer[aria-pressed="true"]{
+  background:var(--trace-wash);
+  border-color:var(--trace);
+}
+.answer[aria-pressed="true"] .k{color:var(--trace)}
+
+/* ============================================================
+   THE TRACE — signature element
+   a record of the shape of your answers, not a progress bar
+   ============================================================ */
+.trace-block{border-top:1px solid var(--rule);padding-top:.85rem}
+.trace-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem}
+.trace svg{width:100%;height:auto;display:block;overflow:visible}
+.trace .baseline{stroke:var(--rule);stroke-width:1;stroke-dasharray:2 4}
+.trace .line{
+  fill:none;
+  stroke:var(--trace);
+  stroke-width:1.75;
+  stroke-linejoin:round;
+  stroke-linecap:round;
+  transition:stroke-dashoffset .5s cubic-bezier(.3,.8,.3,1);
+}
+.trace .dot{fill:var(--trace);opacity:0;transition:opacity .35s ease .12s}
+.trace .dot.shown{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .trace .line{transition:none}
+  .trace .dot{transition:none}
+}
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+.controls{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:1.1rem}
+.linkbtn{
+  font-family:var(--mono);
+  font-size:.76rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:none;
+  border:none;
+  color:var(--ink-soft);
+  cursor:pointer;
+  padding:.4rem 0;
+  border-bottom:1px solid transparent;
+}
+.linkbtn:hover{color:var(--trace);border-bottom-color:var(--trace)}
+.linkbtn:focus-visible{outline:2px solid var(--trace);outline-offset:3px}
+.linkbtn[hidden]{display:none}
+
+.cta{
+  font-family:var(--sans);
+  font-size:1rem;
+  background:var(--ink);
+  color:var(--paper);
+  border:1px solid var(--ink);
+  border-radius:3px;
+  padding:.9rem 1.5rem;
+  cursor:pointer;
+  align-self:flex-start;
+  transition:background .16s;
+}
+.cta:hover{background:var(--trace);border-color:var(--trace)}
+.cta:focus-visible{outline:2px solid var(--trace);outline-offset:3px}
+.cta.ghost{background:none;color:var(--ink);border-color:var(--rule)}
+.cta.ghost:hover{background:none;border-color:var(--trace);color:var(--trace)}
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+.result-head{display:flex;align-items:flex-end;gap:1rem;margin-bottom:.3rem}
+.score{
+  font-family:var(--mono);
+  font-size:clamp(3.2rem,15vw,5rem);
+  line-height:.85;
+  font-weight:400;
+  letter-spacing:-.04em;
+  color:var(--trace);
+}
+.score .of{font-size:.3em;color:var(--ink-soft);letter-spacing:0}
+.verdict{
+  font-family:var(--serif);
+  font-weight:300;
+  font-size:clamp(1.3rem,4.5vw,1.7rem);
+  line-height:1.25;
+  margin:1.1rem 0 1.3rem;
+  text-wrap:balance;
+}
+.panel{
+  border-top:1px solid var(--rule);
+  padding-top:1.1rem;
+  margin-top:1.3rem;
+  display:grid;
+  gap:.85rem;
+}
+.panel h2{
+  font-family:var(--mono);
+  font-size:.74rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.panel ul{list-style:none;display:grid;gap:.6rem}
+.panel li{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start;font-size:.95rem;line-height:1.5}
+.panel li .mark{font-family:var(--mono);font-size:.72rem;color:var(--trace);padding-top:.24rem}
+.result-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+.foot{
+  margin-top:auto;
+  padding-top:1.6rem;
+  border-top:1px solid var(--rule);
+  font-family:var(--mono);
+  font-size:.7rem;
+  letter-spacing:.05em;
+  color:var(--ink-soft);
+  line-height:1.7;
+}
+.foot a{color:var(--trace)}
+.copied{font-family:var(--mono);font-size:.74rem;color:var(--trace);align-self:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <h1>Ten Questions</h1>
+    <span class="eyebrow" id="counter">AQ-10 · adult</span>
+  </header>
+
+  <!-- ==================== INTRO ==================== -->
+  <section class="screen on" id="s-intro">
+    <div class="intro-body">
+      <p class="lede">Ten questions. No verdict at the end — a starting point for a conversation with your GP.</p>
+      <div class="notes">
+        <div class="note"><span class="mark">01</span><span class="fine">This is the AQ-10, the ten-item screening questionnaire NICE recommends for adults. A screener, not a diagnosis. Only a specialist assessment can diagnose autism.</span></div>
+        <div class="note"><span class="mark">02</span><span class="fine">Answer for how you generally are, not how you've been this week. First instinct is usually the right one.</span></div>
+        <div class="note"><span class="mark">03</span><span class="fine">Nothing you enter leaves this device. There's no server, no account, no analytics. Close the tab and it's gone.</span></div>
+      </div>
+    </div>
+    <button class="cta" id="begin">Start the questionnaire</button>
+  </section>
+
+  <!-- ==================== QUESTIONS ==================== -->
+  <section class="screen" id="s-quiz">
+    <div class="stage">
+      <div class="qhead">
+        <span class="eyebrow" id="qnum">01 / 10</span>
+        <span class="placeholder-flag" id="flag" hidden>Placeholder text</span>
+      </div>
+      <p class="question" id="qtext">—</p>
+    </div>
+
+    <div class="answers" id="answers" role="group" aria-labelledby="qtext"></div>
+
+    <div class="trace-block">
+      <div class="trace-head">
+        <span class="eyebrow">Your trace</span>
+        <span class="eyebrow" id="tracehint">agree above, disagree below</span>
+      </div>
+      <div class="trace">
+        <svg id="tracesvg" viewBox="0 0 420 92" preserveAspectRatio="none" aria-hidden="true">
+          <line class="baseline" x1="0" y1="46" x2="420" y2="46"></line>
+          <polyline class="line" id="traceline" points=""></polyline>
+          <g id="tracedots"></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="linkbtn" id="back" hidden>← Previous</button>
+      <button class="linkbtn" id="restart">Start over</button>
+    </div>
+  </section>
+
+  <!-- ==================== RESULT ==================== -->
+  <section class="screen" id="s-result">
+    <div class="result-head">
+      <span class="score"><span id="scoreval">0</span><span class="of"> / 10</span></span>
+    </div>
+    <p class="eyebrow">AQ-10 score · threshold is 6</p>
+
+    <p class="verdict" id="verdict">—</p>
+
+    <div class="trace-block">
+      <div class="trace-head"><span class="eyebrow">Your trace</span></div>
+      <div class="trace">
+        <svg id="tracesvg2" viewBox="0 0 420 92" preserveAspectRatio="none" aria-hidden="true">
+          <line class="baseline" x1="0" y1="46" x2="420" y2="46"></line>
+          <polyline class="line" id="traceline2" points=""></polyline>
+          <g id="tracedots2"></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>What this score can't tell you</h2>
+      <ul>
+        <li><span class="mark">—</span><span>A score of 6 or more doesn't mean you're autistic. A score under 6 doesn't mean you aren't.</span></li>
+        <li><span class="mark">—</span><span>The AQ-10 misses people who mask well, and misses more women and people diagnosed later in life.</span></li>
+        <li><span class="mark">—</span><span>If you have ADHD, this score is likely to run high whether or not you're also autistic. The two share a lot of surface behaviour.</span></li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>If you want to take it further</h2>
+      <ul>
+        <li><span class="mark">01</span><span>Book a GP appointment and bring your answers. In England you can ask to be referred under <strong>Right to Choose</strong>, which is NHS-funded — you pick the provider from a list, but you do need the GP referral first.</span></li>
+        <li><span class="mark">02</span><span>Write down examples before you go: school, friendships, sensory stuff, routines, what you find tiring about other people. Assessments lean heavily on developmental history and it's hard to recall on the spot.</span></li>
+        <li><span class="mark">03</span><span>Assessors usually want an informant who knew you aged four or five — a parent or older sibling. Worth asking them early.</span></li>
+      </ul>
+    </div>
+
+    <div class="result-actions">
+      <button class="cta" id="copy">Copy my answers</button>
+      <button class="cta ghost" id="again">Start over</button>
+      <span class="copied" id="copied" hidden>Copied</span>
+    </div>
+
+    <p class="foot">
+      AQ-10 © Autism Research Centre, University of Cambridge. This page is a screening aid and is not a diagnosis, a clinical opinion, or a substitute for assessment. Nothing entered here is stored or transmitted.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================================
+   ITEMS — REPLACE BEFORE USE
+   ----------------------------------------------------------------------------
+   The ten `text` values below are PLACEHOLDERS. Paste the official AQ-10 (Adult)
+   wording from the Autism Research Centre / NICE PDF into each one, in order,
+   then set placeholder:false (or delete the key) so the orange flag disappears.
+
+   Do NOT paraphrase the items. Altered wording invalidates the instrument.
+
+   `key` is the scoring direction and is already correct — leave it alone:
+     'agree'    → scores 1 for "definitely agree" or "slightly agree"
+     'disagree' → scores 1 for "definitely disagree" or "slightly disagree"
+   ========================================================================== */
+const ITEMS = [
+  { text:"Item 1 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
+  { text:"Item 2 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 3 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 4 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 5 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 6 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 7 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
+  { text:"Item 8 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
+  { text:"Item 9 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
+  { text:"Item 10 — paste official AQ-10 wording here.", key:"agree",    placeholder:true }
+];
+
+const THRESHOLD = 6;
+
+/* Response options, strongest agreement first. */
+const OPTIONS = [
+  { label:"Definitely agree",    side:"agree"    },
+  { label:"Slightly agree",      side:"agree"    },
+  { label:"Slightly disagree",   side:"disagree" },
+  { label:"Definitely disagree", side:"disagree" }
+];
+
+/* Trace geometry: answer index → y. Agree sits above the midline. */
+const TRACE_Y = [16, 36, 56, 76];
+const TRACE_X = i => 21 + i * 42;
+
+const $ = id => document.getElementById(id);
+const answers = new Array(ITEMS.length).fill(null);
+let cursor = 0;
+
+/* ---------------------------------------------------------------- screens */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $(id).classList.add("on");
+  window.scrollTo(0,0);
+}
+
+/* ---------------------------------------------------------------- trace */
+let prevLen = 0;
+
+function drawTrace(lineEl, dotsEl, animate){
+  const pts = [];
+  for (let i = 0; i < answers.length; i++){
+    if (answers[i] === null) break;
+    pts.push([TRACE_X(i), TRACE_Y[answers[i]]]);
+  }
+
+  lineEl.setAttribute("points", pts.map(p => p.join(",")).join(" "));
+
+  // reveal only the newly added segment
+  if (pts.length > 1){
+    const len = lineEl.getTotalLength();
+    lineEl.style.strokeDasharray = len + " " + len;
+    if (animate && prevLen < len){
+      lineEl.style.transition = "none";
+      lineEl.style.strokeDashoffset = (len - prevLen);
+      lineEl.getBoundingClientRect();          // force reflow
+      lineEl.style.transition = "";
+      lineEl.style.strokeDashoffset = 0;
+    } else {
+      lineEl.style.strokeDashoffset = 0;
+    }
+    prevLen = len;
+  } else {
+    lineEl.style.strokeDasharray = "";
+    lineEl.style.strokeDashoffset = 0;
+    prevLen = 0;
+  }
+
+  dotsEl.innerHTML = "";
+  pts.forEach(([x,y]) => {
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",x); c.setAttribute("cy",y); c.setAttribute("r",3);
+    c.setAttribute("class","dot");
+    dotsEl.appendChild(c);
+    requestAnimationFrame(() => c.classList.add("shown"));
+  });
+}
+
+/* ---------------------------------------------------------------- render */
+function renderQuestion(){
+  const item = ITEMS[cursor];
+
+  $("qnum").textContent = String(cursor+1).padStart(2,"0") + " / " + String(ITEMS.length).padStart(2,"0");
+  $("qtext").textContent = item.text;
+  $("flag").hidden = !item.placeholder;
+  $("back").hidden = cursor === 0;
+
+  const box = $("answers");
+  box.innerHTML = "";
+  OPTIONS.forEach((opt, i) => {
+    const b = document.createElement("button");
+    b.className = "answer";
+    b.type = "button";
+    b.setAttribute("aria-pressed", answers[cursor] === i ? "true" : "false");
+    b.innerHTML = '<span class="k">' + (i+1) + '</span><span>' + opt.label + '</span>';
+    b.addEventListener("click", () => choose(i));
+    box.appendChild(b);
+  });
+
+  drawTrace($("traceline"), $("tracedots"), false);
+}
+
+function choose(optionIndex){
+  const firstTime = answers[cursor] === null;
+  answers[cursor] = optionIndex;
+
+  document.querySelectorAll("#answers .answer").forEach((b,i) =>
+    b.setAttribute("aria-pressed", i === optionIndex ? "true" : "false"));
+
+  drawTrace($("traceline"), $("tracedots"), firstTime);
+
+  setTimeout(() => {
+    if (cursor < ITEMS.length - 1){ cursor++; renderQuestion(); }
+    else { finish(); }
+  }, 340);
+}
+
+/* ---------------------------------------------------------------- scoring */
+function scoreOf(i){
+  const a = answers[i];
+  if (a === null) return 0;
+  return OPTIONS[a].side === ITEMS[i].key ? 1 : 0;
+}
+
+function total(){
+  return answers.reduce((sum,_,i) => sum + scoreOf(i), 0);
+}
+
+function finish(){
+  const t = total();
+  $("scoreval").textContent = t;
+  $("verdict").textContent = t >= THRESHOLD
+    ? "Your answers reach the threshold where NICE suggests a full autism assessment is worth discussing. That's a reason to talk to your GP — it isn't a diagnosis, and it isn't a conclusion."
+    : "Your answers sit below the threshold NICE uses to suggest a referral. That doesn't rule autism out. If your own sense of yourself says otherwise, that's still worth taking to a GP.";
+
+  prevLen = 0;
+  drawTrace($("traceline2"), $("tracedots2"), false);
+  show("s-result");
+}
+
+/* ---------------------------------------------------------------- export */
+function asText(){
+  const lines = [
+    "AQ-10 (Adult) — self-completed",
+    "Date: " + new Date().toLocaleDateString("en-GB"),
+    "Score: " + total() + " / 10 (referral threshold 6)",
+    "",
+    "Screening result only. Not a diagnosis.",
+    ""
+  ];
+  ITEMS.forEach((item,i) => {
+    lines.push(String(i+1).padStart(2,"0") + ". " + item.text);
+    lines.push("    " + (answers[i] === null ? "(not answered)" : OPTIONS[answers[i]].label)
+               + "   [" + scoreOf(i) + "]");
+  });
+  return lines.join("\n");
+}
+
+$("copy").addEventListener("click", async () => {
+  const text = asText();
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+  }
+  const tag = $("copied");
+  tag.hidden = false;
+  setTimeout(() => { tag.hidden = true; }, 2200);
+});
+
+/* ---------------------------------------------------------------- nav */
+function reset(){
+  answers.fill(null);
+  cursor = 0;
+  prevLen = 0;
+  show("s-intro");
+}
+
+$("begin").addEventListener("click", () => { show("s-quiz"); renderQuestion(); });
+$("again").addEventListener("click", reset);
+$("restart").addEventListener("click", reset);
+$("back").addEventListener("click", () => {
+  if (cursor > 0){ cursor--; prevLen = 0; renderQuestion(); }
+});
+
+/* keyboard 1–4 */
+document.addEventListener("keydown", e => {
+  if (!$("s-quiz").classList.contains("on")) return;
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 4) choose(n - 1);
+  if (e.key === "Backspace" && cursor > 0){ e.preventDefault(); cursor--; prevLen = 0; renderQuestion(); }
+});
+</script>
+</body>
+</html>
