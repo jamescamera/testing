@@ -1,0 +1,10 @@
+{
+  "_comment": "Google Drive file IDs already ingested, mapped to their note ID. The daily pass skips any ID listed here.",
+  "ingested": {
+    "seed-pasted-in-conversation": {
+      "note_id": "2026-08-20-delivery-system-new-pathway-dosing-and-procedure",
+      "ingested_at": "2026-08-20",
+      "source": "photo pasted directly into the setup conversation; the original never reached Drive, so this note has no archived image"
+    }
+  }
+}
