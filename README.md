@@ -14,8 +14,9 @@ photo on phone -> Drive folder -> ingest -> notes/*.md -> daily digest -> archiv
 
 ## One-time setup
 
-1. **Make the Drive folder.** Create a folder in Google Drive called exactly
-   `Ad Notes Inbox`.
+1. **The Drive folder already exists** — `Ad Notes Inbox`, created on the
+   connected Google account:
+   https://drive.google.com/drive/folders/1PNjnnaPTj599ZF7jA1oKLOblzXZpsbCT
 2. **Point your phone at it.** In the Google Drive app, set that folder as a
    destination you can share photos into. On iOS the fastest route is a
    Shortcut ("Save to Drive → Ad Notes Inbox") added to the share sheet or
@@ -43,9 +44,16 @@ Each page becomes a markdown file in `notes/` with:
 
 ## The daily pass
 
-A scheduled routine runs every morning and follows `RUNBOOK.md`: ingest new
-photos, write the digest, rebuild the archive, commit. It republishes to the
-same URL, so the link above never changes.
+A scheduled Routine (`Ad notes daily pass`, 07:12 UTC daily) follows
+`RUNBOOK.md`: ingest new photos, write the digest, rebuild the archive,
+commit. It republishes to the same URL, so the link above never changes.
+
+> **Needs one manual step before ingest works.** This organization does not
+> allow a session to attach connectors to a Routine it creates, so the
+> Routine currently fires *without* Google Drive access and cannot see the
+> inbox folder. Open the Routine in the claude.ai Routines UI and add the
+> **Google Drive** connector to it. Until then the pass runs but ingests
+> nothing — steps 2 to 4 still work against whatever is already in `notes/`.
 
 The digest is the real product. Transcribing is clerical; the value is in a
 system that notices you have circled the same idea on three pages six weeks

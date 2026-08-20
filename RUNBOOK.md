@@ -27,7 +27,14 @@ pip install pillow --quiet     # thumbnails; ingest still works without it
 
 ## Step 1 - Ingest
 
-Find new page photos in the Google Drive folder named **`Ad Notes Inbox`**.
+If this session has no `mcp__Google_Drive__*` tools, the Drive connector is
+not attached to the Routine. Do not guess at what might have arrived: skip
+to step 2, work only with notes already in the repo, and say plainly in the
+digest that ingest was skipped for lack of Drive access.
+
+Find new page photos in the Google Drive folder **`Ad Notes Inbox`**
+(folder ID `1PNjnnaPTj599ZF7jA1oKLOblzXZpsbCT`, on the connected Google
+account). Query it by `parentId = '1PNjnnaPTj599ZF7jA1oKLOblzXZpsbCT'`.
 
 1. Read `state/ingested.json`. Every Drive file ID in there is already done.
 2. List image files in the Drive folder. Skip any ID already in state.
@@ -127,7 +134,9 @@ Rules:
 python3 tools/build_site.py
 ```
 
-Then republish the Artifact **to the same URL** — pass the existing URL as
+Then republish the Artifact **to the same URL**
+(`https://claude.ai/code/artifact/0ad78c7e-dc5b-46dc-abe1-1171c473431c`,
+passed as the `url` parameter) — pass the existing URL as
 `url`, do not create a second artifact. The URL is recorded in `README.md`.
 Keep the title and favicon unchanged.
 
