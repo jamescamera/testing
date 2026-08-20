@@ -135,16 +135,6 @@ h1{
 /* ---- question stage ---- */
 .stage{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:8.5rem;padding:.5rem 0 1.6rem}
 .qhead{display:flex;align-items:baseline;gap:.8rem;margin-bottom:1rem}
-.placeholder-flag{
-  font-family:var(--mono);
-  font-size:.68rem;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:#8A5A3C;
-  border:1px solid #D8B9A4;
-  border-radius:2px;
-  padding:.12rem .4rem;
-}
 
 /* ---- answers ---- */
 .answers{display:grid;gap:.5rem;margin-bottom:1.4rem}
@@ -319,7 +309,6 @@ h1{
     <div class="stage">
       <div class="qhead">
         <span class="eyebrow" id="qnum">01 / 10</span>
-        <span class="placeholder-flag" id="flag" hidden>Placeholder text</span>
       </div>
       <p class="question" id="qtext">—</p>
     </div>
@@ -399,29 +388,27 @@ h1{
 
 <script>
 /* ============================================================================
-   ITEMS — REPLACE BEFORE USE
+   ITEMS — AQ-10 (Adult)
    ----------------------------------------------------------------------------
-   The ten `text` values below are PLACEHOLDERS. Paste the official AQ-10 (Adult)
-   wording from the Autism Research Centre / NICE PDF into each one, in order,
-   then set placeholder:false (or delete the key) so the orange flag disappears.
+   Official wording from the Autism Research Centre / NICE CG142 AQ-10 (Adult).
+   Reproduced verbatim — do NOT paraphrase. Altered wording invalidates the
+   instrument.
 
-   Do NOT paraphrase the items. Altered wording invalidates the instrument.
-
-   `key` is the scoring direction and is already correct — leave it alone:
+   `key` is the scoring direction:
      'agree'    → scores 1 for "definitely agree" or "slightly agree"
      'disagree' → scores 1 for "definitely disagree" or "slightly disagree"
    ========================================================================== */
 const ITEMS = [
-  { text:"Item 1 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
-  { text:"Item 2 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 3 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 4 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 5 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 6 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 7 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
-  { text:"Item 8 — paste official AQ-10 wording here.",  key:"agree",    placeholder:true },
-  { text:"Item 9 — paste official AQ-10 wording here.",  key:"disagree", placeholder:true },
-  { text:"Item 10 — paste official AQ-10 wording here.", key:"agree",    placeholder:true }
+  { text:"I often notice small sounds when others do not.", key:"agree" },
+  { text:"I usually concentrate more on the whole picture, rather than the small details.", key:"disagree" },
+  { text:"I find it easy to do more than one thing at once.", key:"disagree" },
+  { text:"If there is an interruption, I can switch back to what I was doing very quickly.", key:"disagree" },
+  { text:"I find it easy to \u2018read between the lines\u2019 when someone is talking to me.", key:"disagree" },
+  { text:"I know how to tell if someone listening to me is getting bored.", key:"disagree" },
+  { text:"When I\u2019m reading a story I find it difficult to work out the characters\u2019 intentions.", key:"agree" },
+  { text:"I like to collect information about categories of things (e.g. types of car, types of bird, types of train, types of plant etc).", key:"agree" },
+  { text:"I find it easy to work out what someone is thinking or feeling just by looking at their face.", key:"disagree" },
+  { text:"I find it difficult to work out people\u2019s intentions.", key:"agree" }
 ];
 
 const THRESHOLD = 6;
@@ -497,7 +484,6 @@ function renderQuestion(){
 
   $("qnum").textContent = String(cursor+1).padStart(2,"0") + " / " + String(ITEMS.length).padStart(2,"0");
   $("qtext").textContent = item.text;
-  $("flag").hidden = !item.placeholder;
   $("back").hidden = cursor === 0;
 
   const box = $("answers");
